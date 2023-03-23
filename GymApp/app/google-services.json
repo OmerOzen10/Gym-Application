@@ -1,0 +1,68 @@
+{
+  "project_info": {
+    "project_number": "70957746599",
+    "project_id": "gymapp-fe7ba",
+    "storage_bucket": "gymapp-fe7ba.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:70957746599:android:64888dda893c0b98ce0e82",
+        "android_client_info": {
+          "package_name": "com.example.gymapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "70957746599-6pvc594pu9are8bomprn1mkon0afvgbh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAZzqWQJkxkMVbzwhM-Mbb44_vnzB0nsl8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "70957746599-6pvc594pu9are8bomprn1mkon0afvgbh.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:70957746599:android:3655b9c89e207a73ce0e82",
+        "android_client_info": {
+          "package_name": "com.example.registerapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "70957746599-6pvc594pu9are8bomprn1mkon0afvgbh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAZzqWQJkxkMVbzwhM-Mbb44_vnzB0nsl8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "70957746599-6pvc594pu9are8bomprn1mkon0afvgbh.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
