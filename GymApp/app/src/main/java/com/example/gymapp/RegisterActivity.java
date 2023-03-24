@@ -1,8 +1,12 @@
 package com.example.gymapp;
 
 import android.annotation.SuppressLint;
+import android.companion.WifiDeviceFilter;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
@@ -22,7 +26,13 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.google.firebase.auth.FirebaseUser;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -31,6 +41,7 @@ public class RegisterActivity extends AppCompatActivity {
     private ProgressBar progressBar;
     private RadioGroup radioGroupGender;
     private RadioButton radioButtonGenderSelected;
+    private static final String TAG = "RegisterActivity";
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -61,9 +72,14 @@ public class RegisterActivity extends AppCompatActivity {
 
 
         Button btnRegister = findViewById(R.id.button);
+
+
+
         btnRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+
 
                 int selectedGenderId = radioGroupGender.getCheckedRadioButtonId();
                 radioButtonGenderSelected = findViewById(selectedGenderId);
@@ -75,6 +91,9 @@ public class RegisterActivity extends AppCompatActivity {
                 String txtPassword = edtPassword.getText().toString();
                 String txtConfirm = edtConfirm.getText().toString();
                 String txtGender;
+
+                Pattern pattern = Pattern.compile("^(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/?]).+$");
+                Matcher matcher = pattern.matcher(txtPassword);
 
                 if (TextUtils.isEmpty(txtName)){
                     Toast.makeText(RegisterActivity.this, "Please enter your full name", Toast.LENGTH_SHORT).show();
@@ -112,6 +131,11 @@ public class RegisterActivity extends AppCompatActivity {
                     Toast.makeText(RegisterActivity.this, "Please re-enter your Password", Toast.LENGTH_SHORT).show();
                     edtPassword.setError("Password is too weak");
                     edtPassword.requestFocus();
+                } else if (!matcher.matches()) {
+                    Toast.makeText(RegisterActivity.this, "Please re-enter your Password", Toast.LENGTH_SHORT).show();
+                    edtPassword.setError("Password is too weak");
+                    edtPassword.requestFocus();
+
                 } else if (TextUtils.isEmpty(txtConfirm)) {
                     Toast.makeText(RegisterActivity.this, "Please enter Password Confirmation", Toast.LENGTH_SHORT).show();
                     edtConfirm.setError("Password Confirmation is required");
@@ -127,15 +151,14 @@ public class RegisterActivity extends AppCompatActivity {
                     progressBar.setVisibility(View.VISIBLE);
                     registerUser(txtName,txtEmail,txtDob,txtGender,txtMobile,txtPassword);
                 }
-
-
-
             }
         });
 
 
 
     }
+
+
 
     private void registerUser(String txtName, String txtEmail, String txtDob, String txtGender, String txtMobile, String txtPassword) {
 
@@ -161,6 +184,23 @@ public class RegisterActivity extends AppCompatActivity {
 //                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
 //                    startActivity(intent);
 //                    finish();
+                }else {
+                    try {
+                        throw task.getException();
+                    }catch (FirebaseAuthWeakPasswordException e){
+                        edtPassword.setError("At least 1 Uppercase, 1 Lowercase and 1 Special Character");
+                        edtPassword.requestFocus();
+                    }catch (FirebaseAuthInvalidCredentialsException e){
+                        edtEmail.setError("Invalid Email");
+                        edtEmail.requestFocus();
+                    }catch (FirebaseAuthUserCollisionException e){
+                        edtEmail.setError("User is already registered with this email");
+                        edtEmail.requestFocus();
+                    }catch (Exception e){
+                        Log.e(TAG, e.getMessage());
+                        Toast.makeText(RegisterActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                        progressBar.setVisibility(View.GONE);
+                    }
                 }
 
             }
