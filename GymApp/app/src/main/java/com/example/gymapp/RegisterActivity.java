@@ -1,7 +1,9 @@
 package com.example.gymapp;
 
 import android.annotation.SuppressLint;
+import android.app.DatePickerDialog;
 import android.companion.WifiDeviceFilter;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -10,6 +12,7 @@ import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -30,7 +33,12 @@ import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.Calendar;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -42,6 +50,8 @@ public class RegisterActivity extends AppCompatActivity {
     private RadioGroup radioGroupGender;
     private RadioButton radioButtonGenderSelected;
     private static final String TAG = "RegisterActivity";
+
+    private DatePickerDialog picker;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -69,6 +79,26 @@ public class RegisterActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.progressBar);
         radioGroupGender = findViewById(R.id.radioGroupGender);
         radioGroupGender.clearCheck();
+
+        edtDob.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final Calendar calendar = Calendar.getInstance();
+                int day = calendar.get(Calendar.DAY_OF_MONTH);
+                int month = calendar.get(Calendar.MONTH);
+                int year = calendar.get(Calendar.YEAR);
+
+                picker = new DatePickerDialog(RegisterActivity.this, new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker datePicker, int year, int month, int dayOdMonth) {
+
+                        edtDob.setText(dayOdMonth + "/" + (month +1) + "/" + year);
+
+                    }
+                },year,month,day);
+                picker.show();
+            }
+        });
 
 
         Button btnRegister = findViewById(R.id.button);
@@ -168,22 +198,50 @@ public class RegisterActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<AuthResult> task) {
 
                 if (task.isSuccessful()){
-                    Toast.makeText(RegisterActivity.this, "User registered successfully", Toast.LENGTH_SHORT).show();
+
                     progressBar.setVisibility(View.GONE);
                     FirebaseUser firebaseUser = auth.getCurrentUser();
-                    firebaseUser.sendEmailVerification();
-                    edtName.setText("");
-                    edtEmail.setText("");
-                    edtDob.setText("");
-                    edtMobile.setText("");
-                    edtConfirm.setText("");
-                    edtPassword.setText("");
-                    radioButtonGenderSelected.setText("");
 
-//                    Intent intent = new Intent(RegisterActivity.this,UserProfileActivity.class);
-//                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-//                    startActivity(intent);
-//                    finish();
+                    UserProfileChangeRequest profileChangeRequest = new UserProfileChangeRequest.Builder().setDisplayName(txtName).build();
+                    firebaseUser.updateProfile(profileChangeRequest);
+
+                    ReadWriteUserDetails writeUserDetails = new ReadWriteUserDetails(txtDob,txtGender,txtMobile);
+
+                    DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Registered Users");
+
+                    databaseReference.child(firebaseUser.getUid()).setValue(writeUserDetails).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+
+                            if (task.isSuccessful()){
+                                Toast.makeText(RegisterActivity.this, "User registered successfully", Toast.LENGTH_SHORT).show();
+
+                                firebaseUser.sendEmailVerification();
+
+                                edtName.setText("");
+                                edtEmail.setText("");
+                                edtDob.setText("");
+                                edtMobile.setText("");
+                                edtConfirm.setText("");
+                                edtPassword.setText("");
+                                radioButtonGenderSelected.setText("");
+
+//                                Intent intent = new Intent(RegisterActivity.this,UserProfileActivity.class);
+//                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+//                                startActivity(intent);
+//                                finish();
+
+                            }else {
+                                Toast.makeText(RegisterActivity.this, "User registration failed", Toast.LENGTH_SHORT).show();
+                            }
+                            progressBar.setVisibility(View.GONE);
+
+
+
+                        }
+                    });
+
+
                 }else {
                     try {
                         throw task.getException();
@@ -199,8 +257,10 @@ public class RegisterActivity extends AppCompatActivity {
                     }catch (Exception e){
                         Log.e(TAG, e.getMessage());
                         Toast.makeText(RegisterActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                        progressBar.setVisibility(View.GONE);
+
                     }
+
+                    progressBar.setVisibility(View.GONE);
                 }
 
             }
