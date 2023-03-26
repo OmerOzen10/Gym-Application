@@ -202,10 +202,10 @@ public class RegisterActivity extends AppCompatActivity {
                     progressBar.setVisibility(View.GONE);
                     FirebaseUser firebaseUser = auth.getCurrentUser();
 
-                    UserProfileChangeRequest profileChangeRequest = new UserProfileChangeRequest.Builder().setDisplayName(txtName).build();
-                    firebaseUser.updateProfile(profileChangeRequest);
+//                    UserProfileChangeRequest profileChangeRequest = new UserProfileChangeRequest.Builder().setDisplayName(txtName).build();
+//                    firebaseUser.updateProfile(profileChangeRequest);
 
-                    ReadWriteUserDetails writeUserDetails = new ReadWriteUserDetails(txtDob,txtGender,txtMobile);
+                    ReadWriteUserDetails writeUserDetails = new ReadWriteUserDetails(txtName,txtDob,txtGender,txtMobile);
 
                     DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Registered Users");
 
@@ -226,10 +226,10 @@ public class RegisterActivity extends AppCompatActivity {
                                 edtPassword.setText("");
                                 radioButtonGenderSelected.setText("");
 
-//                                Intent intent = new Intent(RegisterActivity.this,UserProfileActivity.class);
-//                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-//                                startActivity(intent);
-//                                finish();
+                                Intent intent = new Intent(RegisterActivity.this,UserProfileACtivity.class);
+                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                startActivity(intent);
+                                finish();
 
                             }else {
                                 Toast.makeText(RegisterActivity.this, "User registration failed", Toast.LENGTH_SHORT).show();

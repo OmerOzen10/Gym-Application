@@ -82,7 +82,6 @@
         android:layout_marginStart="80dp"
         android:layout_marginTop="100dp"
         android:layout_marginEnd="80dp"
-        android:layout_marginBottom="182dp"
         android:backgroundTint="@color/black"
         android:fontFamily="sans-serif-black"
         android:padding="10dp"
@@ -90,7 +89,6 @@
         android:textColor="@color/white"
         android:textSize="20sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/layoutPassword1" />

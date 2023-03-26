@@ -1,6 +1,8 @@
 package com.example.gymapp;
 
 
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -16,6 +18,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
@@ -26,6 +29,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
+import com.google.firebase.auth.FirebaseUser;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -89,7 +93,19 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()){
-                    Toast.makeText(LoginActivity.this, "You are logged in", Toast.LENGTH_SHORT).show();
+
+
+                    FirebaseUser firebaseUser = auth.getCurrentUser();
+
+                    if (firebaseUser.isEmailVerified()){
+                        Toast.makeText(LoginActivity.this, "You are logged in", Toast.LENGTH_SHORT).show();
+                        startActivity(new Intent(LoginActivity.this,UserProfileACtivity.class));
+                        finish();
+                    }else {
+                        firebaseUser.sendEmailVerification();
+                        auth.signOut();
+                        showAlertDialog();
+                    }
 
                 }else {
 
@@ -112,5 +128,43 @@ public class LoginActivity extends AppCompatActivity {
                 progressBar1.setVisibility(View.GONE);
             }
         });
+    }
+
+    private void showAlertDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
+        builder.setTitle("Email Not Verified");
+        builder.setMessage("Please verify your email now. You can not login without email verification");
+
+        builder.setPositiveButton("Continue", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                Intent intent = new Intent(Intent.ACTION_MAIN);
+                intent.addCategory(Intent.CATEGORY_APP_EMAIL);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+            }
+        });
+
+        AlertDialog alertDialog = builder.create();
+
+        alertDialog.show();
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        if (auth.getCurrentUser() != null){
+            Toast.makeText(this, "Already logged in!", Toast.LENGTH_SHORT).show();
+
+            startActivity(new Intent(LoginActivity.this,UserProfileACtivity.class));
+            finish();
+
+
+        }else {
+            Toast.makeText(this, "You can Log in now!", Toast.LENGTH_SHORT).show();
+        }
+
     }
 }
