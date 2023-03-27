@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -50,14 +51,14 @@ public class LoginActivity extends AppCompatActivity {
 
         auth = FirebaseAuth.getInstance();
 
-//        ImageView hidePass = findViewById(R.id.hidePass);
-//
-//        hidePass.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//
-//            }
-//        });
+        TextView forgotPassword = findViewById(R.id.forgotPassword);
+        forgotPassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(LoginActivity.this, "You can reset your password now!!", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(LoginActivity.this, ForgotPasswordActivity.class));
+            }
+        });
 
         Button btnLogin = findViewById(R.id.btnLogin1);
         btnLogin.setOnClickListener(new View.OnClickListener() {
@@ -101,11 +102,14 @@ public class LoginActivity extends AppCompatActivity {
                         Toast.makeText(LoginActivity.this, "You are logged in", Toast.LENGTH_SHORT).show();
                         startActivity(new Intent(LoginActivity.this,UserProfileACtivity.class));
                         finish();
+
                     }else {
                         firebaseUser.sendEmailVerification();
                         auth.signOut();
                         showAlertDialog();
                     }
+
+                    Log.d(TAG, "onComplete: email " + firebaseUser.isEmailVerified());
 
                 }else {
 
@@ -157,6 +161,7 @@ public class LoginActivity extends AppCompatActivity {
 
         if (auth.getCurrentUser() != null){
             Toast.makeText(this, "Already logged in!", Toast.LENGTH_SHORT).show();
+            Log.d(TAG, "onStart: currrentuser" + auth.getCurrentUser());
 
             startActivity(new Intent(LoginActivity.this,UserProfileACtivity.class));
             finish();
