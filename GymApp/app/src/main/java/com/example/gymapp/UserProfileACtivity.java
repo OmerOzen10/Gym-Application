@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -23,6 +24,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 public class UserProfileACtivity extends AppCompatActivity {
 
@@ -38,12 +40,26 @@ public class UserProfileACtivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_profile);
 
+        getSupportActionBar().setTitle("Profile");
+
         txtWelcome = findViewById(R.id.txtWelcome);
         txtName = findViewById(R.id.txtName);
         txtEmail = findViewById(R.id.txtEmail);
         txtDOB = findViewById(R.id.txtDOB);
         txtGender = findViewById(R.id.txtGender);
         txtMobile = findViewById(R.id.txtMobile);
+        profileImage = findViewById(R.id.imageProfile);
+
+
+
+        profileImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(UserProfileACtivity.this,UploadProfilePictureActivity.class);
+                startActivity(intent);
+            }
+        });
+
 
         progressBar3 = findViewById(R.id.progressBar3);
 
@@ -118,6 +134,18 @@ public class UserProfileACtivity extends AppCompatActivity {
                     txtGender.setText(gender);
                     txtMobile.setText(mobile);
 
+                    //Set User DP after upload
+
+                    Uri uri = firebaseUser.getPhotoUrl();
+
+                    //ImageView setImageUri() should not be used with regular Uris. Use Picasso
+
+                    Picasso.get().load(uri).into(profileImage);
+
+
+
+                }else {
+                    Toast.makeText(UserProfileACtivity.this, "Something went wrong!!", Toast.LENGTH_SHORT).show();
                 }
                 progressBar3.setVisibility(View.GONE);
             }
@@ -173,4 +201,5 @@ public class UserProfileACtivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
 }
