@@ -17,6 +17,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -140,7 +141,9 @@ public class UserProfileACtivity extends AppCompatActivity {
 
                     //ImageView setImageUri() should not be used with regular Uris. Use Picasso
 
-                    Picasso.get().load(uri).into(profileImage);
+//                    Picasso.get().load(uri).into(profileImage);\
+
+                    Glide.with(UserProfileACtivity.this).load(uri).into(profileImage);
 
 
 
@@ -174,9 +177,9 @@ public class UserProfileACtivity extends AppCompatActivity {
         if (id == R.id.refresh_menu){
             startActivity(getIntent());
             finish();
-//        } else if (id == R.id.update_profile) {
-//            Intent intent = new Intent(UserProfileACtivity.this, UpdateProfileActivity.class);
-//            startActivity(intent);
+        } else if (id == R.id.update_profile) {
+            Intent intent = new Intent(UserProfileACtivity.this, UpdateProfileActivity.class);
+            startActivity(intent);
 //        }else if (id == R.id.update_email){
 //            Intent intent = new Intent(UserProfileACtivity.this, UpdateEmailActivity.class);
 //            startActivity(intent);

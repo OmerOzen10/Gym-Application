@@ -3,7 +3,9 @@ package com.example.gymapp;
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.companion.WifiDeviceFilter;
+import android.content.ContentResolver;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -11,8 +13,10 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
+import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -24,6 +28,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 //import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
@@ -37,6 +43,9 @@ import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.util.Calendar;
 import java.util.regex.Matcher;
@@ -49,9 +58,19 @@ public class RegisterActivity extends AppCompatActivity {
     private ProgressBar progressBar;
     private RadioGroup radioGroupGender;
     private RadioButton radioButtonGenderSelected;
+    private ImageView imgPic;
+    private Button btnChoose1;
     private static final String TAG = "RegisterActivity";
 
+    private static final int PICK_IMAGE_REQUEST = 1;
+
     private DatePickerDialog picker;
+
+    StorageReference storageReference;
+    private FirebaseUser firebaseUser;
+    FirebaseAuth auth;
+
+    Uri uriImage;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -74,6 +93,24 @@ public class RegisterActivity extends AppCompatActivity {
         edtMobile = findViewById(R.id.edtMobile);
         edtPassword = findViewById(R.id.edtPassword);
         edtConfirm = findViewById(R.id.edtConfirm);
+
+        imgPic = findViewById(R.id.imgPic);
+        btnChoose1 = findViewById(R.id.btnChoose1);
+
+        auth = FirebaseAuth.getInstance();
+        firebaseUser = auth.getCurrentUser();
+
+        storageReference = FirebaseStorage.getInstance().getReference("ProfilePictures");
+
+
+        btnChoose1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openFileChooser();
+            }
+        });
+
+
 
 
         progressBar = findViewById(R.id.progressBar);
@@ -114,10 +151,10 @@ public class RegisterActivity extends AppCompatActivity {
                 int selectedGenderId = radioGroupGender.getCheckedRadioButtonId();
                 radioButtonGenderSelected = findViewById(selectedGenderId);
 
-                String txtName = edtName.getText().toString();
-                String txtEmail = edtEmail.getText().toString();
-                String txtDob = edtDob.getText().toString();
-                String txtMobile = edtMobile.getText().toString();
+                String txtName = edtName.getText().toString().trim();
+                String txtEmail = edtEmail.getText().toString().trim();
+                String txtDob = edtDob.getText().toString().trim();
+                String txtMobile = edtMobile.getText().toString().trim();
                 String txtPassword = edtPassword.getText().toString();
                 String txtConfirm = edtConfirm.getText().toString();
                 String txtGender;
@@ -176,23 +213,103 @@ public class RegisterActivity extends AppCompatActivity {
                     edtConfirm.requestFocus();
                     edtPassword.clearComposingText();
                     edtConfirm.clearComposingText();
-                } else {
+                } else if (uriImage==null) {
+                    imgPic.requestFocus();
+                    Toast.makeText(RegisterActivity.this, "No File Selected", Toast.LENGTH_SHORT).show();
+
+            } else {
                     txtGender = radioButtonGenderSelected.getText().toString();
                     progressBar.setVisibility(View.VISIBLE);
                     registerUser(txtName,txtEmail,txtDob,txtGender,txtMobile,txtPassword);
+                    UploadPic();
                 }
             }
         });
+    }
+
+    private void UploadPic() {
+
+        if (uriImage != null){
+
+            //Save the image with uid of the currently logged user
+            StorageReference fileReference = storageReference.child(auth.getCurrentUser().getUid() + "." + getFileExtension(uriImage));
+
+
+            //Upload image to Storage
+            fileReference.putFile(uriImage).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+
+                    fileReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+
+                            Uri downloadUri = uri;
+                            firebaseUser = auth.getCurrentUser();
+
+                            //Set the display image after user upload
+                            UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder().setPhotoUri(downloadUri).build();
+                            firebaseUser.updateProfile(profileUpdates);
+                        }
+                    });
+
+                    progressBar.setVisibility(View.GONE);
+                    Toast.makeText(RegisterActivity.this, "Upload Successful", Toast.LENGTH_SHORT).show();
+
+                    Intent intent = new Intent(RegisterActivity.this, UserProfileACtivity.class);
+                    startActivity(intent);
+                    finish();
+
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Toast.makeText(RegisterActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            });
+
+        }else {
+            progressBar.setVisibility(View.GONE);
+            Toast.makeText(RegisterActivity.this, "No File was Selected!", Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
+    private String getFileExtension(Uri uri){
+        ContentResolver cR = getContentResolver();
+        MimeTypeMap mime = MimeTypeMap.getSingleton();
+        return mime.getExtensionFromMimeType(cR.getType(uri));
+    }
+
+    private void openFileChooser() {
+
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(intent,PICK_IMAGE_REQUEST);
 
 
 
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null){
+
+            uriImage = data.getData();
+            imgPic.setImageURI(uriImage);
+
+        }
     }
 
 
 
     private void registerUser(String txtName, String txtEmail, String txtDob, String txtGender, String txtMobile, String txtPassword) {
 
-        FirebaseAuth auth = FirebaseAuth.getInstance();
+        auth = FirebaseAuth.getInstance();
         auth.createUserWithEmailAndPassword(txtEmail,txtPassword).addOnCompleteListener(RegisterActivity.this, new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {

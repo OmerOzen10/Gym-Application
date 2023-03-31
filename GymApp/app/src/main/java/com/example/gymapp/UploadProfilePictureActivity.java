@@ -176,9 +176,10 @@ public class UploadProfilePictureActivity extends AppCompatActivity {
         if (id == R.id.refresh_menu){
             startActivity(getIntent());
             finish();
-//        } else if (id == R.id.update_profile) {
-//            Intent intent = new Intent(UserProfileACtivity.this, UpdateProfileActivity.class);
-//            startActivity(intent);
+        } else if (id == R.id.update_profile) {
+            Intent intent = new Intent(UploadProfilePictureActivity.this, UpdateProfileActivity.class);
+            startActivity(intent);
+            finish();
 //        }else if (id == R.id.update_email){
 //            Intent intent = new Intent(UserProfileACtivity.this, UpdateEmailActivity.class);
 //            startActivity(intent);
