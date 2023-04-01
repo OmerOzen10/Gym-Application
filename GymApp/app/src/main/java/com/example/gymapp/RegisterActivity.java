@@ -117,6 +117,7 @@ public class RegisterActivity extends AppCompatActivity {
         radioGroupGender = findViewById(R.id.radioGroupGender);
         radioGroupGender.clearCheck();
 
+        //DatePicker
         edtDob.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

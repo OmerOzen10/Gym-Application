@@ -161,7 +161,7 @@ public class LoginActivity extends AppCompatActivity {
 
         if (auth.getCurrentUser() != null){
             Toast.makeText(this, "Already logged in!", Toast.LENGTH_SHORT).show();
-            Log.d(TAG, "onStart: currrentuser" + auth.getCurrentUser());
+
 
             startActivity(new Intent(LoginActivity.this,UserProfileACtivity.class));
             finish();
@@ -170,6 +170,8 @@ public class LoginActivity extends AppCompatActivity {
         }else {
             Toast.makeText(this, "You can Log in now!", Toast.LENGTH_SHORT).show();
         }
+
+        Log.d(TAG, "onStart: current" + auth.getCurrentUser().getEmail());
 
     }
 }
