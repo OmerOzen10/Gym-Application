@@ -87,6 +87,7 @@ public class RegisterActivity extends AppCompatActivity {
         layoutConfirm = findViewById(R.id.layoutConfirm);
 
 
+
         edtName = findViewById(R.id.edtName);
         edtEmail = findViewById(R.id.edtEmail);
         edtDob = findViewById(R.id.edtDob);
@@ -222,92 +223,13 @@ public class RegisterActivity extends AppCompatActivity {
                     txtGender = radioButtonGenderSelected.getText().toString();
                     progressBar.setVisibility(View.VISIBLE);
                     registerUser(txtName,txtEmail,txtDob,txtGender,txtMobile,txtPassword);
-                    UploadPic();
+//                    UploadPic();
+
+
                 }
             }
         });
     }
-
-    private void UploadPic() {
-
-        if (uriImage != null){
-
-            //Save the image with uid of the currently logged user
-            StorageReference fileReference = storageReference.child(auth.getCurrentUser().getUid() + "." + getFileExtension(uriImage));
-
-
-            //Upload image to Storage
-            fileReference.putFile(uriImage).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-
-                    fileReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                        @Override
-                        public void onSuccess(Uri uri) {
-
-                            Uri downloadUri = uri;
-                            firebaseUser = auth.getCurrentUser();
-
-                            //Set the display image after user upload
-                            UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder().setPhotoUri(downloadUri).build();
-                            firebaseUser.updateProfile(profileUpdates);
-                        }
-                    });
-
-                    progressBar.setVisibility(View.GONE);
-                    Toast.makeText(RegisterActivity.this, "Upload Successful", Toast.LENGTH_SHORT).show();
-
-                    Intent intent = new Intent(RegisterActivity.this, UserProfileACtivity.class);
-                    startActivity(intent);
-                    finish();
-
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    Toast.makeText(RegisterActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                }
-            });
-
-        }else {
-            progressBar.setVisibility(View.GONE);
-            Toast.makeText(RegisterActivity.this, "No File was Selected!", Toast.LENGTH_SHORT).show();
-        }
-
-    }
-
-    private String getFileExtension(Uri uri){
-        ContentResolver cR = getContentResolver();
-        MimeTypeMap mime = MimeTypeMap.getSingleton();
-        return mime.getExtensionFromMimeType(cR.getType(uri));
-    }
-
-    private void openFileChooser() {
-
-        Intent intent = new Intent();
-        intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(intent,PICK_IMAGE_REQUEST);
-
-
-
-
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null){
-
-            uriImage = data.getData();
-            imgPic.setImageURI(uriImage);
-
-        }
-    }
-
-
-
     private void registerUser(String txtName, String txtEmail, String txtDob, String txtGender, String txtMobile, String txtPassword) {
 
         auth = FirebaseAuth.getInstance();
@@ -318,7 +240,7 @@ public class RegisterActivity extends AppCompatActivity {
                 if (task.isSuccessful()){
 
                     progressBar.setVisibility(View.GONE);
-                    FirebaseUser firebaseUser = auth.getCurrentUser();
+                    firebaseUser = auth.getCurrentUser();
 
 //                    UserProfileChangeRequest profileChangeRequest = new UserProfileChangeRequest.Builder().setDisplayName(txtName).build();
 //                    firebaseUser.updateProfile(profileChangeRequest);
@@ -343,6 +265,7 @@ public class RegisterActivity extends AppCompatActivity {
                                 edtConfirm.setText("");
                                 edtPassword.setText("");
                                 radioButtonGenderSelected.setText("");
+                                UploadPic();
 
                                 Intent intent = new Intent(RegisterActivity.this,UserProfileACtivity.class);
                                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -385,5 +308,91 @@ public class RegisterActivity extends AppCompatActivity {
         });
 
     }
+
+    private void UploadPic() {
+
+
+        if (uriImage != null){
+            //Save the image with uid of the currently logged user
+            StorageReference fileReference = storageReference.child(auth.getCurrentUser().getUid() + "." + getFileExtension(uriImage));
+
+
+            //Upload image to Storage
+            fileReference.putFile(uriImage).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+
+                    fileReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            Uri downloadUri = uri;
+                            firebaseUser = auth.getCurrentUser();
+                            if (firebaseUser != null) {
+                                //Set the display image after user upload
+                                UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder().setPhotoUri(downloadUri).build();
+                                firebaseUser.updateProfile(profileUpdates);
+                            }
+
+                        }
+                    });
+
+                    progressBar.setVisibility(View.GONE);
+                    Toast.makeText(RegisterActivity.this, "Upload Successful", Toast.LENGTH_SHORT).show();
+
+                    Intent intent = new Intent(RegisterActivity.this, UserProfileACtivity.class);
+                    startActivity(intent);
+                    finish();
+                    Log.d(TAG, "onSuccess: img " + uriImage );
+
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Toast.makeText(RegisterActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            });
+
+        }else {
+            progressBar.setVisibility(View.GONE);
+            Toast.makeText(RegisterActivity.this, "No File was Selected!", Toast.LENGTH_SHORT).show();
+        }
+
+        Log.d(TAG, "UploadPic: uri " + uriImage.toString());
+
+    }
+
+    private String getFileExtension(Uri uri){
+        ContentResolver cR = getContentResolver();
+        MimeTypeMap mime = MimeTypeMap.getSingleton();
+        return mime.getExtensionFromMimeType(cR.getType(uri));
+    }
+
+    private void openFileChooser() {
+
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(intent,PICK_IMAGE_REQUEST);
+
+
+
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null){
+
+            uriImage = data.getData();
+            imgPic.setImageURI(uriImage);
+
+        }
+    }
+
+
+
+
 
 }

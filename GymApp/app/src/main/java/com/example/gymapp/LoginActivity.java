@@ -171,7 +171,5 @@ public class LoginActivity extends AppCompatActivity {
             Toast.makeText(this, "You can Log in now!", Toast.LENGTH_SHORT).show();
         }
 
-        Log.d(TAG, "onStart: current" + auth.getCurrentUser().getEmail());
-
     }
 }

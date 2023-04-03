@@ -180,9 +180,9 @@ public class UserProfileACtivity extends AppCompatActivity {
         } else if (id == R.id.update_profile) {
             Intent intent = new Intent(UserProfileACtivity.this, UpdateProfileActivity.class);
             startActivity(intent);
-//        }else if (id == R.id.update_email){
-//            Intent intent = new Intent(UserProfileACtivity.this, UpdateEmailActivity.class);
-//            startActivity(intent);
+        }else if (id == R.id.update_email){
+            Intent intent = new Intent(UserProfileACtivity.this, UpdateEmailActivity.class);
+            startActivity(intent);
 //        } else if (id == R.id.settings_menu) {
 //            Toast.makeText(this, "menu_settings", Toast.LENGTH_SHORT).show();
 //        } else if (id == R.id.change_password) {

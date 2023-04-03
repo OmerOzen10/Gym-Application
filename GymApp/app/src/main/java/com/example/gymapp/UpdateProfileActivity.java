@@ -74,15 +74,15 @@ public class UpdateProfileActivity extends AppCompatActivity {
         });
 
 //        //Update Email
-//        Button btnUploadEmail = findViewById(R.id.btnUpdateEmail);
-//        btnUploadEmail.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Intent intent = new Intent(UpdateProfileActivity.this,UpdateEmailActivity.class);
-//                startActivity(intent);
-//                finish();
-//            }
-//        });
+        Button btnUploadEmail = findViewById(R.id.btnUpdateEmail);
+        btnUploadEmail.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(UpdateProfileActivity.this,UpdateEmailActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
 
         //DatePicker
         edtUpdateDoB.setOnClickListener(new View.OnClickListener() {
@@ -247,9 +247,9 @@ public class UpdateProfileActivity extends AppCompatActivity {
             Intent intent = new Intent(UpdateProfileActivity.this, UpdateProfileActivity.class);
             startActivity(intent);
             finish();
-//        }else if (id == R.id.update_email){
-//            Intent intent = new Intent(UserProfileACtivity.this, UpdateEmailActivity.class);
-//            startActivity(intent);
+        }else if (id == R.id.update_email){
+            Intent intent = new Intent(UpdateProfileActivity.this, UpdateEmailActivity.class);
+            startActivity(intent);
 //        } else if (id == R.id.settings_menu) {
 //            Toast.makeText(this, "menu_settings", Toast.LENGTH_SHORT).show();
 //        } else if (id == R.id.change_password) {
