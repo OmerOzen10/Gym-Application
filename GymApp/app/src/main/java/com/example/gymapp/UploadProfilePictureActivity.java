@@ -27,8 +27,6 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
-import java.net.URI;
-
 public class UploadProfilePictureActivity extends AppCompatActivity {
 
     private ProgressBar progressBarProfile;
@@ -115,7 +113,7 @@ public class UploadProfilePictureActivity extends AppCompatActivity {
                     progressBarProfile.setVisibility(View.GONE);
                     Toast.makeText(UploadProfilePictureActivity.this, "Upload Successful", Toast.LENGTH_SHORT).show();
 
-                    Intent intent = new Intent(UploadProfilePictureActivity.this, UserProfileACtivity.class);
+                    Intent intent = new Intent(UploadProfilePictureActivity.this, UserProfileActivity.class);
                     startActivity(intent);
                     finish();
 

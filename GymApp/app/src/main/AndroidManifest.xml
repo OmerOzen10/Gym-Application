@@ -24,7 +24,7 @@
             android:name=".ForgotPasswordActivity"
             android:exported="false" />
         <activity
-            android:name=".UserProfileACtivity"
+            android:name=".UserProfileActivity"
             android:exported="false" />
         <activity
             android:name=".MainActivity"

@@ -2,14 +2,11 @@ package com.example.gymapp;
 
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
-import android.companion.WifiDeviceFilter;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.text.Editable;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
@@ -40,7 +37,6 @@ import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
-import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
@@ -267,7 +263,7 @@ public class RegisterActivity extends AppCompatActivity {
                                 radioButtonGenderSelected.setText("");
                                 UploadPic();
 
-                                Intent intent = new Intent(RegisterActivity.this,UserProfileACtivity.class);
+                                Intent intent = new Intent(RegisterActivity.this, UserProfileActivity.class);
                                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                                 startActivity(intent);
                                 finish();
@@ -339,7 +335,7 @@ public class RegisterActivity extends AppCompatActivity {
                     progressBar.setVisibility(View.GONE);
                     Toast.makeText(RegisterActivity.this, "Upload Successful", Toast.LENGTH_SHORT).show();
 
-                    Intent intent = new Intent(RegisterActivity.this, UserProfileACtivity.class);
+                    Intent intent = new Intent(RegisterActivity.this, UserProfileActivity.class);
                     startActivity(intent);
                     finish();
                     Log.d(TAG, "onSuccess: img " + uriImage );

@@ -25,9 +25,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.squareup.picasso.Picasso;
 
-public class UserProfileACtivity extends AppCompatActivity {
+public class UserProfileActivity extends AppCompatActivity {
 
     private TextView txtWelcome,txtName,txtEmail,txtDOB,txtGender,txtMobile;
     private ProgressBar progressBar3;
@@ -56,7 +55,7 @@ public class UserProfileACtivity extends AppCompatActivity {
         profileImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(UserProfileACtivity.this,UploadProfilePictureActivity.class);
+                Intent intent = new Intent(UserProfileActivity.this,UploadProfilePictureActivity.class);
                 startActivity(intent);
             }
         });
@@ -91,7 +90,7 @@ public class UserProfileACtivity extends AppCompatActivity {
 
     private void showAlertDialog() {
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(UserProfileACtivity.this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(UserProfileActivity.this);
         builder.setTitle("Email Not Verified");
         builder.setMessage("Please verify your email now. You can not login without email verification next time");
 
@@ -143,12 +142,12 @@ public class UserProfileACtivity extends AppCompatActivity {
 
 //                    Picasso.get().load(uri).into(profileImage);\
 
-                    Glide.with(UserProfileACtivity.this).load(uri).into(profileImage);
+                    Glide.with(UserProfileActivity.this).load(uri).into(profileImage);
 
 
 
                 }else {
-                    Toast.makeText(UserProfileACtivity.this, "Something went wrong!!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(UserProfileActivity.this, "Something went wrong!!", Toast.LENGTH_SHORT).show();
                 }
                 progressBar3.setVisibility(View.GONE);
             }
@@ -156,7 +155,7 @@ public class UserProfileACtivity extends AppCompatActivity {
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
 
-                Toast.makeText(UserProfileACtivity.this, "Something went wrong!!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(UserProfileActivity.this, "Something went wrong!!", Toast.LENGTH_SHORT).show();
                 progressBar3.setVisibility(View.GONE);
 
             }
@@ -178,10 +177,10 @@ public class UserProfileACtivity extends AppCompatActivity {
             startActivity(getIntent());
             finish();
         } else if (id == R.id.update_profile) {
-            Intent intent = new Intent(UserProfileACtivity.this, UpdateProfileActivity.class);
+            Intent intent = new Intent(UserProfileActivity.this, UpdateProfileActivity.class);
             startActivity(intent);
         }else if (id == R.id.update_email){
-            Intent intent = new Intent(UserProfileACtivity.this, UpdateEmailActivity.class);
+            Intent intent = new Intent(UserProfileActivity.this, UpdateEmailActivity.class);
             startActivity(intent);
 //        } else if (id == R.id.settings_menu) {
 //            Toast.makeText(this, "menu_settings", Toast.LENGTH_SHORT).show();
@@ -194,7 +193,7 @@ public class UserProfileACtivity extends AppCompatActivity {
         } else if (id == R.id.logout) {
             auth.signOut();
             Toast.makeText(this, "Logged Out", Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(UserProfileACtivity.this,MainActivity.class);
+            Intent intent = new Intent(UserProfileActivity.this,MainActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
             finish();

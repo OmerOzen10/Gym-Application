@@ -25,7 +25,6 @@ import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.ktx.Firebase;
 
 public class UpdateEmailActivity extends AppCompatActivity {
 
@@ -153,7 +152,7 @@ public class UpdateEmailActivity extends AppCompatActivity {
                 if (task.isSuccessful()) {
                     firebaseUser.sendEmailVerification();
                     Toast.makeText(UpdateEmailActivity.this, "Email has been updated. Please verify your new Email", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(UpdateEmailActivity.this,UserProfileACtivity.class);
+                    Intent intent = new Intent(UpdateEmailActivity.this, UserProfileActivity.class);
                     startActivity(intent);
                     finish();
 
