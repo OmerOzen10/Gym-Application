@@ -178,17 +178,20 @@ public class UploadProfilePictureActivity extends AppCompatActivity {
             Intent intent = new Intent(UploadProfilePictureActivity.this, UpdateProfileActivity.class);
             startActivity(intent);
             finish();
-//        }else if (id == R.id.update_email){
-//            Intent intent = new Intent(UserProfileACtivity.this, UpdateEmailActivity.class);
-//            startActivity(intent);
-//        } else if (id == R.id.settings_menu) {
-//            Toast.makeText(this, "menu_settings", Toast.LENGTH_SHORT).show();
-//        } else if (id == R.id.change_password) {
-//            Intent intent = new Intent(UserProfileACtivity.this, ChangePasswordActivity.class);
-//            startActivity(intent);
-//        } else if (id == R.id.delete_profile) {
-//            Intent intent = new Intent(UserProfileACtivity.this, DeleteActivity.class);
-//            startActivity(intent);
+        }else if (id == R.id.update_email){
+            Intent intent = new Intent(UploadProfilePictureActivity.this, UpdateEmailActivity.class);
+            startActivity(intent);
+            finish();
+        } else if (id == R.id.settings_menu) {
+            Toast.makeText(this, "menu_settings", Toast.LENGTH_SHORT).show();
+        } else if (id == R.id.change_password) {
+            Intent intent = new Intent(UploadProfilePictureActivity.this, ChangePasswordActivity.class);
+            startActivity(intent);
+            finish();
+        } else if (id == R.id.delete_profile) {
+            Intent intent = new Intent(UploadProfilePictureActivity.this, DeleteProfileActivity.class);
+            startActivity(intent);
+            finish();
         } else if (id == R.id.logout) {
             auth.signOut();
             Toast.makeText(this, "Logged Out", Toast.LENGTH_SHORT).show();
