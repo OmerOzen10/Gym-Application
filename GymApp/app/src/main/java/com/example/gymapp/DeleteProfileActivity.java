@@ -133,7 +133,7 @@ public class DeleteProfileActivity extends AppCompatActivity {
         builder.setPositiveButton("Continue", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-               deleteUser(firebaseUser);
+               deleteUserData(firebaseUser);
             }
         });
 
@@ -159,13 +159,12 @@ public class DeleteProfileActivity extends AppCompatActivity {
 
     }
 
-    private void deleteUser(FirebaseUser firebaseUser) {
+    private void deleteUser() {
 
         firebaseUser.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()){
-                    deleteUserData();
                     auth.signOut();
                     Toast.makeText(DeleteProfileActivity.this, "User has been deleted", Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(DeleteProfileActivity.this,LoginActivity.class);
@@ -184,23 +183,27 @@ public class DeleteProfileActivity extends AppCompatActivity {
 
     }
 
-    private void deleteUserData() {
+    private void deleteUserData(FirebaseUser firebaseUser) {
 
-        //Delete The Photo from Storage
-        FirebaseStorage storage = FirebaseStorage.getInstance();
-        StorageReference storageReference = storage.getReferenceFromUrl(firebaseUser.getPhotoUrl().toString());
-        storageReference.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void unused) {
-                Log.d(TAG, "onSuccess: Photo Deleted");
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Log.d(TAG, e.getMessage());
-                Toast.makeText(DeleteProfileActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
+        //Delete The Photo from Storage. Also check if the user has upload any pic bedore deleting
+
+        if (firebaseUser.getPhotoUrl() != null){
+            FirebaseStorage storage = FirebaseStorage.getInstance();
+            StorageReference storageReference = storage.getReferenceFromUrl(firebaseUser.getPhotoUrl().toString());
+            storageReference.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void unused) {
+                    Log.d(TAG, "onSuccess: Photo Deleted");
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Log.d(TAG, e.getMessage());
+                    Toast.makeText(DeleteProfileActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+
 
         //Delete teh Data's from Realtime
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Registered Users");
@@ -208,6 +211,9 @@ public class DeleteProfileActivity extends AppCompatActivity {
             @Override
             public void onSuccess(Void unused) {
                 Log.d(TAG, "onSuccess: User Data Deleted");
+
+                //Delete the user after deleting the related data
+                deleteUser();
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override

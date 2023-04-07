@@ -310,7 +310,7 @@ public class RegisterActivity extends AppCompatActivity {
 
         if (uriImage != null){
             //Save the image with uid of the currently logged user
-            StorageReference fileReference = storageReference.child(auth.getCurrentUser().getUid() + "." + getFileExtension(uriImage));
+            StorageReference fileReference = storageReference.child(auth.getCurrentUser().getUid() + "/displaypic." + getFileExtension(uriImage));
 
 
             //Upload image to Storage
