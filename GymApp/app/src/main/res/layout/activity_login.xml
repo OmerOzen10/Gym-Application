@@ -114,7 +114,7 @@
         android:focusableInTouchMode="true"
         android:fontFamily="sans-serif-black"
         android:linksClickable="true"
-        android:text="Forgot Password?"
+        android:text="@string/forgot_password"
         android:textColorLink="#3955F6"
         android:textSize="13sp"
         android:textStyle="bold"

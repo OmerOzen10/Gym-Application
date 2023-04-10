@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -26,8 +27,8 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-        Button btnRegister = findViewById(R.id.btnRegister);
-        btnRegister.setOnClickListener(new View.OnClickListener() {
+        TextView txt_register_link = findViewById(R.id.txt_register_link);
+        txt_register_link.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, RegisterActivity.class);

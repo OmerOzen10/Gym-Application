@@ -57,19 +57,20 @@
                     android:src="@drawable/image1"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/txtSlogan" />
+                    app:layout_constraintTop_toBottomOf="@+id/txtSlogan"
+                    />
 
 
                 <Button
-                    android:id="@+id/btnRegister"
+                    android:id="@+id/btnLogin"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="80dp"
+                    android:layout_marginStart="120dp"
                     android:layout_marginTop="60dp"
-                    android:layout_marginEnd="80dp"
-                    android:backgroundTint="#4FFB0000"
+                    android:layout_marginEnd="120dp"
+                    android:backgroundTint="@color/purple_500"
                     android:fontFamily="sans-serif-black"
-                    android:text="REGISTER"
+                    android:text="LOGIN"
                     android:textColor="#FAFAFA"
                     android:textSize="15sp"
                     android:textStyle="bold"
@@ -77,25 +78,27 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/image1" />
 
-                <Button
-                    android:id="@+id/btnLogin"
-                    android:layout_width="match_parent"
+                <TextView
+                    android:id="@+id/txt_register"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="80dp"
                     android:layout_marginTop="30dp"
-                    android:layout_marginEnd="80dp"
-                    android:layout_marginBottom="100dp"
-                    android:backgroundTint="#4B08FD86"
-                    android:fontFamily="sans-serif-black"
-                    android:text="LOGIN"
-                    android:textColor="#FAFAFA"
-                    android:textSize="15sp"
-                    android:textStyle="bold"
-
+                    android:text="Do not have an account?"
+                    android:textColor="@color/white"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/btnRegister" />
+                    app:layout_constraintTop_toBottomOf="@+id/btnLogin" />
 
+                <TextView
+                    android:id="@+id/txt_register_link"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:text="@string/register"
+                    android:textColor="@color/purple_700"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/txt_register" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

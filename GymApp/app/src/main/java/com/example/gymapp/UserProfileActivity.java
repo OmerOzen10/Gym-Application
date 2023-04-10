@@ -1,10 +1,5 @@
 package com.example.gymapp;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -17,6 +12,11 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -26,6 +26,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.Objects;
+
 public class UserProfileActivity extends AppCompatActivity {
 
     private TextView txtWelcome,txtName,txtEmail,txtDOB,txtGender,txtMobile;
@@ -34,13 +36,17 @@ public class UserProfileActivity extends AppCompatActivity {
     private ImageView profileImage;
     private FirebaseAuth auth;
     String TAG = "UserProfileActivity";
+    private SwipeRefreshLayout swipeContainer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_profile);
 
-        getSupportActionBar().setTitle("Profile");
+        Objects.requireNonNull(getSupportActionBar()).setTitle("Profile");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        swipeToRefresh();
 
         txtWelcome = findViewById(R.id.txtWelcome);
         txtName = findViewById(R.id.txtName);
@@ -52,12 +58,9 @@ public class UserProfileActivity extends AppCompatActivity {
 
 
 
-        profileImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(UserProfileActivity.this,UploadProfilePictureActivity.class);
-                startActivity(intent);
-            }
+        profileImage.setOnClickListener(view -> {
+            Intent intent = new Intent(UserProfileActivity.this,UploadProfilePictureActivity.class);
+            startActivity(intent);
         });
 
 
@@ -75,8 +78,23 @@ public class UserProfileActivity extends AppCompatActivity {
             showUserProfile(firebaseUser);
 
         }
+        assert firebaseUser != null;
         Log.d(TAG, "onCreate: ok" + firebaseUser.isEmailVerified());
 
+    }
+
+    private void swipeToRefresh() {
+
+        swipeContainer = findViewById(R.id.swipeContainer);
+
+        swipeContainer.setOnRefreshListener(() -> {
+            startActivity(getIntent());
+            finish();
+            overridePendingTransition(0,0);
+            swipeContainer.setRefreshing(false);
+        });
+
+      swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright, android.R.color.holo_green_light,android.R.color.holo_orange_light, android.R.color.holo_red_light);
     }
 
     private void checkEmailVerified(FirebaseUser firebaseUser) {
@@ -94,14 +112,11 @@ public class UserProfileActivity extends AppCompatActivity {
         builder.setTitle("Email Not Verified");
         builder.setMessage("Please verify your email now. You can not login without email verification next time");
 
-        builder.setPositiveButton("Continue", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                Intent intent = new Intent(Intent.ACTION_MAIN);
-                intent.addCategory(Intent.CATEGORY_APP_EMAIL);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
-            }
+        builder.setPositiveButton("Continue", (dialogInterface, i) -> {
+            Intent intent = new Intent(Intent.ACTION_MAIN);
+            intent.addCategory(Intent.CATEGORY_APP_EMAIL);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
         });
 
         AlertDialog alertDialog = builder.create();
